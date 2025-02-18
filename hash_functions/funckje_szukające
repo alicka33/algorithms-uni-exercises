@@ -1,0 +1,79 @@
+def find_N(string, text):
+    lista_pozycji = []
+    if len(text) == 0 or len(string) == 0 or len(text) < len(string):
+        return lista_pozycji
+
+    for i in range(len(text)):
+        flaga = True
+        j = 0
+        while flaga:
+            if j == len(string)-1:
+                lista_pozycji.append(i)
+                break
+
+            if text[i+j] == string[j]:
+                flaga = True
+                j += 1
+            else:
+                flaga = False
+
+    return lista_pozycji
+
+
+def zapełnij_tablice_czesciowych_dopasowan(string, tablica_dopasowan):
+    i = 2
+    j = 0
+    tablica_dopasowan[0] = -1
+    tablica_dopasowan[1] = 0
+    while i < len(string):
+        if string[i-1] == string[j]:
+            tablica_dopasowan[i] = j+1
+            i += 1
+            j += 1
+        else:
+            if j > 0:
+                j = tablica_dopasowan[j]
+            else:
+                tablica_dopasowan[i] = 0
+                i += 1
+
+
+def find_KMP(string, text):
+    lista_pozycji = []
+    if len(text) == 0 or len(string) == 0 or len(text) < len(string):
+        return lista_pozycji
+
+    tablica_dopasowan = [0]*len(string)
+    zapełnij_tablice_czesciowych_dopasowan(string, tablica_dopasowan)
+
+    m = 0
+    i = 0
+
+    while m+i < len(text):
+        if string[i] == text[m+i]:
+            i += 1
+            if i == len(string):
+                lista_pozycji.append(m)
+                i = 0
+                m += 1
+        else:
+            m = m + i-tablica_dopasowan[i]
+            if i > 0:
+                i = tablica_dopasowan[i]
+
+    return lista_pozycji
+
+
+def find_KR(string, text):
+    lista_pozycji = []
+    if len(text) == 0 or len(string) == 0 or len(text) < len(string):
+        return lista_pozycji
+    wartosc_hash = hash(string)
+
+    for i in range(len(text)-len(string)+1):
+        wartosc_hash_now = hash(text[i:i+len(string)])
+        if wartosc_hash == wartosc_hash_now:
+            if text[i:i+len(string)] == string:
+                lista_pozycji.append(i)
+
+    return lista_pozycji
